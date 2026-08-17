@@ -1,8 +1,8 @@
 from app.database.database import Base
 from sqlalchemy import Column,Integer,ForeignKey,Enum as SQLEnum
 from sqlalchemy.orm import relationship
+from app.enums.driver_modes import DrivingMode
 from app.enums.route_enum import Governorate
-
 
 class Driver (Base) :
     __tablename__ = "drivers"
@@ -14,22 +14,32 @@ class Driver (Base) :
         nullable= False
     )
 
-    governorate_1 = Column(
-        SQLEnum(Governorate),
+    mode = Column(
+        SQLEnum(DrivingMode),
+        default="off",
         nullable= False
     )
 
-    governorate_2 = Column(
-            SQLEnum(Governorate),
-            nullable= False
-        )
+    local_operating_area = Column(
+        SQLEnum(Governorate)
+    )
 
     assignments = relationship(
                 "DriverAssignment",
                 back_populates="driver"
             )
+    
     user = relationship(
         "User",
+        back_populates="driver"
+    )
+
+    trips = relationship(
+        "Trip",
         back_populates="driver",
-        uselist=False
+    )
+
+    orders_for_driver = relationship(
+        "Order",
+        back_populates="driver"
     )

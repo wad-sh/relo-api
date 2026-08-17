@@ -15,11 +15,16 @@ class User (Base) :
         nullable=False
     )
 
-    email= Column(
-            String,
-            unique=True,
-            nullable=False
-        )
+    email = Column(
+        String,
+        unique=True,
+        nullable=False
+    )
+
+    phone_number = Column(
+        String,
+        nullable=False
+    )
 
     hashed_password = Column(
         String,
@@ -28,17 +33,13 @@ class User (Base) :
 
     role = Column(
         SQLEnum(UserEnum),
+        default=UserEnum.Customer,
         nullable=False
     )
 
-    orders = relationship(
+    orders_made = relationship(
         "Order",
-        back_populates="order_owner"
-    )
-
-    user_orders_history = relationship(
-        "HistoryOrder",
-        back_populates="order_owner"
+        back_populates="order_owner",
     )
 
     applications = relationship(
@@ -49,5 +50,11 @@ class User (Base) :
     driver = relationship(
         "Driver",
         back_populates="user",
-        uselist=False
+        uselist=False,
+        cascade="all, delete-orphan"
     )
+
+    reviewed_applications = relationship(
+            "DriverApplication",
+            back_populates="reviewer"
+        )

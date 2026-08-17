@@ -1,7 +1,6 @@
 __pycache__/
 *.py[codz]
 
-
 .env
 
 *.db
@@ -9,3 +8,4 @@ __pycache__/
 .vscode/
 
 venv/
+.venv/
