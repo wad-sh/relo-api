@@ -1,0 +1,27 @@
+from pydantic import BaseModel,EmailStr,Field
+
+class UserRegister (BaseModel) :
+    username : str =Field(
+        min_length=2,
+        max_length=30,
+        pattern=r"^[a-z0-9_]+$"
+    )
+
+    email : EmailStr
+
+    phone_number : str = Field(
+        min_length=10,
+        max_length=13,
+        pattern=r"^/+?[0-9]+$"
+    )
+
+    password : str = Field(
+        min_length=8,
+        max_length=72,
+    )
+
+class UserResponse (BaseModel) :
+    id : int
+    username : str
+    email : EmailStr
+    phone_number : str
