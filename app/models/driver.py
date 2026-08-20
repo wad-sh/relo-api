@@ -11,7 +11,8 @@ class Driver (Base) :
         Integer,
         ForeignKey("users.id"),
         primary_key=True,
-        nullable= False
+        nullable= False,
+        index=True
     )
 
     mode = Column(
@@ -21,7 +22,8 @@ class Driver (Base) :
     )
 
     local_operating_area = Column(
-        SQLEnum(Governorate)
+        SQLEnum(Governorate),
+        index=True
     )
 
     assignments = relationship(

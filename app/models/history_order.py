@@ -9,13 +9,15 @@ class HistoryOrder (Base) :
 
     id = Column(
             Integer,
-            primary_key=True
+            primary_key=True,
+        index=True
         )
 
     order_id =Column(
         Integer,
         ForeignKey("orders.id"),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     old_status = Column(
@@ -36,7 +38,8 @@ class HistoryOrder (Base) :
     changed_by_id = Column(
         Integer,
         ForeignKey("users.id"),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     more_details = Column(

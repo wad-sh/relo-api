@@ -8,19 +8,22 @@ class DriverAssignment (Base) :
 
     id = Column(
         Integer,
-        primary_key=True
+        primary_key=True,
+        index=True
     )
 
     order_id = Column(
             Integer,
             ForeignKey("orders.id"),
-            nullable=False
+            nullable=False,
+        index=True
         )
     
     driver_id = Column(
         Integer,
         ForeignKey("drivers.id"),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     created_at = Column(

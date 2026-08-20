@@ -10,23 +10,27 @@ class Trip (Base) :
     id = Column(
         Integer,
         primary_key=True,
-        nullable= False
+        nullable= False,
+        index=True
     )
 
     driver_id = Column(
         Integer,
         ForeignKey("drivers.id"),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     route_from = Column(
         SQLEnum(Governorate),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     route_to = Column(
         SQLEnum(Governorate),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     created_at = Column(

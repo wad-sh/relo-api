@@ -10,13 +10,15 @@ class Order (Base) :
     id = Column(
         Integer,
         primary_key=True,
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     order_owner_id = Column(
         Integer,
         ForeignKey("users.id"),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     status = Column(
@@ -32,12 +34,14 @@ class Order (Base) :
 
     route_from =Column(
         SQLEnum(Governorate),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     route_to =Column(
         SQLEnum(Governorate),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     address_receive = Column(

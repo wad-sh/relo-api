@@ -8,13 +8,15 @@ class DriverApplication (Base) :
 
     id = Column(
                 Integer,
-                primary_key=True
+                primary_key=True,
+        index=True
             )
 
     applicant_id = Column(
         Integer,
         ForeignKey("users.id"),
-        nullable=False
+        nullable=False,
+        index=True
     )
     
     created_at = Column(
@@ -29,7 +31,8 @@ class DriverApplication (Base) :
     
     reviewed_by = Column(
         Integer,
-        ForeignKey("users.id")
+        ForeignKey("users.id"),
+        index=True
     )
     
     status = Column(
