@@ -74,6 +74,11 @@ def delete_user (db: Session,user :User) :
 
 def update_password_user (db: Session,user :User,data:UserPasswordUpdate) :
     exist_user(db,user.id)
+    if password_verify(data.password,user.hashed_password) :
+         raise HTTPException(
+              status_code=409,
+              detail="can not use the same password"
+         )
     hashed_pw = password_hash(data.password)
     user.hashed_password = hashed_pw
     db.commit()
@@ -82,6 +87,11 @@ def update_password_user (db: Session,user :User,data:UserPasswordUpdate) :
 
 def update_phone_user (db:Session, user:User, data:UserPhoneUpdate) :
     exist_user(db,user.id)
+    if user.phone_number == data.phone_number:
+         raise HTTPException(
+              status_code=409,
+              detail="no change"
+         )
     user.phone_number = data.phone_number
     db.commit()
     db.refresh(user)

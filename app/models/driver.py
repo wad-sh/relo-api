@@ -17,7 +17,7 @@ class Driver (Base) :
 
     mode = Column(
         SQLEnum(DrivingMode),
-        default="off",
+        default=DrivingMode.FLEXIBLE,
         nullable= False
     )
 

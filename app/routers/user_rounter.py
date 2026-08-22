@@ -23,11 +23,11 @@ def register (data:UserRegister ,db: Session = Depends(get_db)) :
 def login (data:OAuth2PasswordRequestForm,db: Session = Depends(get_db)) :
     return login_user(db,data)
 
-@user_router.delete ("" , response_model=dict)
+@user_router.delete ("/me" , response_model=dict)
 def delete (db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     return delete_user(db,user)
 
-@user_router.put("/email-username",response_model=UserResponse)
+@user_router.put("/profile",response_model=UserResponse)
 def update_email_username (data: UserUpdate, db: Session = Depends(get_db), user: User = Depends(get_current_user)) :
     return update_user(db,user,data)
 
