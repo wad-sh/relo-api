@@ -51,7 +51,7 @@ def update_area_driver (db: Session,user: User ,data : OperatingArea) :
           
 
 def valid_update (db: Session, user:User) :
-    exist_user(db,user.id)
+    valid_driver(db,user)
 
     has_trips = db.query(Trip).filter(Trip.driver_id == user.id, or_( 
         Trip.status == TripStatus.PLANNED , Trip.status == TripStatus.ACTIVE
@@ -80,4 +80,13 @@ def valid_area_update (db: Session,user: User) :
         raise HTTPException(
              status_code=400,
              detail="mode should be local or flexible to change area"
+        )
+
+def valid_driver (db: Session,user: User) :
+    exist_user(db,user.id)
+    is_driver = db.query(Driver).filter(Driver.id == user.id).first()
+    if is_driver is None :
+        raise HTTPException(
+            status_code=403,
+            detail="you are not a driver"
         )

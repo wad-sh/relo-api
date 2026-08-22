@@ -11,7 +11,7 @@ driver_router = APIRouter(
     tags=["Driver"]
 )
 
-@driver_router.put("/mode",response_model=DriverResponse)
+@driver_router.put("/mode",response_model=dict)
 def update_mode (data:DriverMode ,user:User = Depends(get_current_user),db : Session = Depends(get_db)) :
     return update_mode_driver(db,user,data)
 
