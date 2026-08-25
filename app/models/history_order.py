@@ -1,5 +1,5 @@
 from app.database.database import Base
-from sqlalchemy import Column,String,Integer,ForeignKey,DateTime,Enum as SQLEnum
+from sqlalchemy import Column,String,Integer,func,ForeignKey,DateTime,Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from app.enums.order import OrderStatus,OrderType
 from app.enums.route_enum import Governorate
@@ -30,9 +30,10 @@ class HistoryOrder (Base) :
             nullable=False
         )
 
-    changed_at = Column(
+    created_at = Column(
         DateTime(timezone=True),
-        nullable= False
+        server_default=func.now(),
+        nullable=False
     )
 
     changed_by_id = Column(

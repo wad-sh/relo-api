@@ -11,6 +11,7 @@ from app.services.user_service import exist_user
 from app.services.driver_service import valid_driver
 from app.enums.driver_modes import DrivingMode as Mode
 from app.enums.order import OrderStatus,OrderType
+from app.services.history_service import create_history
 
 def create_order (db : Session, user: User,data: OrderCreate):
     exist_user(db,user.id)
@@ -93,17 +94,22 @@ def update_order (db : Session,order_id: int, user: User,data: Orderupdate):
     db.refresh(order)
     return order
 
-def update_status_admin_order (db: Session, order_id : int, data: OrderUpdateStatus) :
+def update_status_admin_order (db: Session, order_id : int, data: OrderUpdateStatus,more_details:str,admin: User) :
     order = exist_order(db,order_id)
+    old_status = order.status
     order.status = data.status
+    history = create_history(order_id,old_status,order.status,admin.id,more_details)
+    db.add(history)
     db.commit()
     db.refresh(order)
+    db.refresh(history)
     return order
 
 def update_status_order (db: Session, order_id : int,user:User):
         valid_driver(db,user)
         order = exist_order(db,order_id)
         ur_order_driver(db,user,order_id)
+        old_status = order.status
         if order.status == OrderStatus.PENDING:
             order.status = OrderStatus.IN_TRANSIT
         elif order.status == OrderStatus.IN_TRANSIT:
@@ -113,8 +119,11 @@ def update_status_order (db: Session, order_id : int,user:User):
                 status_code=409,
                 detail="order already delivered"
             )
+        history = create_history(order_id,old_status,order.status,user.id)
+        db.add(history)
         db.commit()
         db.refresh(order)
+        db.refresh(history)
         return order
 
 

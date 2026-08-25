@@ -34,6 +34,7 @@ class OrderResponse (BaseModel) :
     address_receive: str
     address_delivery:str
     description: str
+    model_config = ConfigDict(from_attributes=True)
 
 class OrderResponseShort (BaseModel) :
     id: int
@@ -46,7 +47,7 @@ class OrderUpdateStatus (BaseModel ) :
     status : OrderStatus
 
 
-class Orderupdate (BaseModel) :
+class OrderUpdate (BaseModel) :
     type: OrderType| None = None
     operating_area :Governorate | None = None
     route_from: Governorate | None = None
