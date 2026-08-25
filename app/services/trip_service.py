@@ -1,5 +1,5 @@
 from app.models.driver import Driver
-from app.schemas.trip_schemas import TripStatus,TripCreate,TripUpdateroute,TripUpdateStatus
+from app.schemas.trip_schemas import TripStatus,TripCreate,TripUpdateroute,TripUpdateStatus,Tripsearsh
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.models.user import User
@@ -34,13 +34,18 @@ def create_trip (db: Session,user:User,data: TripCreate) :
     db.refresh(new_trip)
     return new_trip
 
-def get_planned_trips_by_route (db: Session, data: TripUpdateroute) :
+def get_planned_trips_by_route (db: Session, data: Tripsearsh) :
      return db.query(Trip).filter(Trip.status == "planned", Trip.route_from == data.route_from, Trip.route_to == data.route_to).all()
+
+def get_my_trips (db: Session,user:User):
+    valid_driver(db,user)
+    return db.query(Trip).filter(Trip.driver_id == user.id).all() 
 
 def update_route_trip (db: Session,user:User,trip_id: int ,data: TripUpdateroute) : 
     valid_driver(db,user)
     valid_mode(user)
     trip = existed_trip_for_driver(db,user,trip_id)
+    validate_planned_trip(trip)
     if data.route_to == data.route_from :
         raise HTTPException(
              status_code=400,
@@ -98,6 +103,7 @@ def update_status_admin_trip (db: Session,trip_id: int,data: TripUpdateStatus) :
 def delete_trip (db: Session,user:User,trip_id: int) : 
     valid_driver(db,user)
     trip = existed_trip_for_driver(db,user,trip_id)
+    validate_planned_trip(trip)
     orders = db.query(Order).filter(
     Order.trip_id == trip_id,
     Order.status.in_([
@@ -150,3 +156,10 @@ def existed_trip_for_driver (db: Session,user: User,trip_id:int) :
             detail="unable to find trip"
         )
     return trip
+
+def validate_planned_trip (trip:Trip) :
+    if trip.status != TripStatus.PLANNED:
+        raise HTTPException(
+        status_code=409,
+        detail="only planned trips can be edited"
+    )

@@ -1,5 +1,5 @@
 from app.models.driver import Driver
-from app.schemas.driver_schemas import DriverMode,OperatingArea
+from app.schemas.driver_schemas import DriverModeUpdate,OperatingArea
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.models.user import User
@@ -16,24 +16,39 @@ from app.enums.driver_modes import DrivingMode as Mode
 
 
 
-def update_mode_driver (db: Session,user: User ,data : DriverMode  ):
-    valid_update(db,user)
+def update_mode_driver(
+    db: Session,
+    user: User,
+    data: DriverModeUpdate
+):
+    valid_update(db, user)
 
-    if data.mode == user.driver.mode :
-          raise HTTPException(
-                status_code= 409,
-                detail= "no change"
-          )
+    if data.mode == user.driver.mode and data.operating_area == user.driver.area:
+        raise HTTPException(
+            status_code=409,
+            detail="no change"
+        )
 
-    user.driver.mode = data.mode
-    if data.mode not in [Mode.LOCAL, Mode.FLEXIBLE]:
-        user.driver.area = None
+    final_mode = data.mode
+    final_area = data.operating_area
+
+    if final_mode in [Mode.LOCAL, Mode.FLEXIBLE]:
+        if final_area is None:
+            raise HTTPException(
+                status_code=400,
+                detail="operating area is required for local or flexible mode"
+            )
+
+    elif final_mode == Mode.TRIP:
+        final_area = None
+
+    user.driver.mode = final_mode
+    user.driver.area = final_area
+
     db.commit()
     db.refresh(user)
 
-    return{
-        "message" : "mode updated successfully. don't forget to change the operatring area if your mode is local or flexible"
-    }
+    return user.driver
 
 
 def update_area_driver (db: Session,user: User ,data : OperatingArea) : 
@@ -43,7 +58,7 @@ def update_area_driver (db: Session,user: User ,data : OperatingArea) :
                 status_code= 409,
                 detail= "no change"
           )
-
+    
     user.driver.area = data.area
     db.commit()
     db.refresh(user)

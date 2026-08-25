@@ -4,8 +4,9 @@ from pydantic import BaseModel,ConfigDict,EmailStr
 from app.enums.user_enum import UserEnum
 
 
-class DriverMode (BaseModel) :
-    mode : DrivingMode
+class DriverModeUpdate(BaseModel):
+    mode: DrivingMode
+    operating_area: Governorate | None = None
 
 class OperatingArea (BaseModel) :
     area : Governorate
@@ -17,5 +18,5 @@ class DriverResponse (BaseModel) :
     phone_number : str
     role : UserEnum
     mode : DrivingMode
-    operating_area : Governorate
+    operating_area : Governorate| None
     model_config = ConfigDict(from_attributes=True)

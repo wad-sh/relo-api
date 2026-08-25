@@ -5,7 +5,7 @@ class OrderStatus (str, Enum):
     ACCEPTED ="accepted"
     IN_TRANSIT = "in_transit"
     DELIVERED ="delivered"
-    REJECTED = "rejected"
+    CANCELLED = "cancelled"
     EXPIRED = "expired"
     ERROR ="error"
 

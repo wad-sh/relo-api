@@ -32,15 +32,18 @@ class Order (Base) :
         nullable=False
     )
 
+    operating_area = Column(
+        SQLEnum(Governorate),
+        index=True
+    )
+
     route_from =Column(
         SQLEnum(Governorate),
-        nullable=False,
         index=True
     )
 
     route_to =Column(
         SQLEnum(Governorate),
-        nullable=False,
         index=True
     )
 

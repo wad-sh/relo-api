@@ -1,4 +1,4 @@
-from pydantic import BaseModel,Field,ConfigDict
+from pydantic import BaseModel,ConfigDict
 from app.enums.trip import TripStatus
 from app.enums.route_enum import Governorate
 from datetime import datetime
@@ -10,6 +10,7 @@ class TripResponse (BaseModel) :
     route_from : Governorate
     route_to:Governorate
     status :TripStatus
+    model_config = ConfigDict(from_attributes=True)
 
 class TripCreate (BaseModel) :
     route_from : Governorate
@@ -22,3 +23,6 @@ class TripUpdateroute (BaseModel) :
 class TripUpdateStatus (BaseModel) :
     status : TripStatus
 
+class Tripsearsh (BaseModel) :
+    route_from : Governorate
+    route_to: Governorate
