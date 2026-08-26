@@ -1,8 +1,6 @@
 from enum import Enum
 
 class AssignmenApplicationtStatus (str, Enum):
-    PENDING = "pending"
-    ACCEPTED ="accepted"
-    REJECTED = "rejected"
+    WAITING = "waiting"
+    TAKEN = "taken"
     EXPIRED = "expired"
-    ERROR ="error"

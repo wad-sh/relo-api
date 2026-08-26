@@ -34,7 +34,7 @@ class DriverAssignment (Base) :
 
     status = Column(
             SQLEnum(AssignmenApplicationtStatus),
-            default="pending",
+            default=AssignmenApplicationtStatus.WAITING,
             nullable=False
         )
 

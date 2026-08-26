@@ -8,7 +8,7 @@ from app.schemas.order_schemas import (
     OrderResponse,
 )
 from app.database.database import get_db
-from app.services.order_service import update_order,update_status_admin_order,update_status_order,cancel_order,create_order,get_my_orders_customer,get_my_orders_driver
+from app.services.order_service import update_order,make_order_avilable,update_status_admin_order,update_status_order,cancel_order,create_order,get_my_orders_customer,get_my_orders_driver
 from app.models.user import User
 from typing import List
 
@@ -44,3 +44,7 @@ def get_for_customer (user:User =Depends(get_current_user)  ,db:Session=Depends(
 @order_router.get("/driver",response_model=List[OrderResponse])
 def get_for_driver (user:User =Depends(get_current_user)  ,db:Session=Depends(get_db)):
     return get_my_orders_driver(db,user)
+
+@order_router.put("/{order_id}/make-avilable",response_model=OrderResponse)
+def make_avilable (order_id:int,user:User =Depends(get_current_user)  ,db:Session=Depends(get_db)):
+    return make_order_avilable(db,user,order_id)
