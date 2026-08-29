@@ -12,7 +12,7 @@ from app.services.driver_service import valid_driver
 from app.enums.driver_modes import DrivingMode as Mode
 from app.enums.order import OrderStatus,OrderType
 from app.services.history_service import create_history
-from app.enums.assignmentapplication import AssignmenApplicationtStatus
+from app.enums.assignment import AssignmentStatus
 from datetime import datetime,timezone
 from app.enums.trip import TripStatus
 
@@ -39,7 +39,7 @@ def create_assignment (db:Session,order:Order) :
 def cancel_assignment (db:Session,order: Order):
     assignments = db.query(DriverAssignment).filter(DriverAssignment.order_id == order.id).all()
     for a in assignments :
-        a.status = AssignmenApplicationtStatus.EXPIRED
+        a.status = AssignmentStatus.EXPIRED
 
 
 
@@ -55,7 +55,7 @@ def accept_assignment_driver (db:Session,user:User,assignment_id:int) :
         assignmnet = db.query(DriverAssignment).filter(
             DriverAssignment.id == assignment_id,
             DriverAssignment.driver_id == user.id,
-            DriverAssignment.status == AssignmenApplicationtStatus.PENDING
+            DriverAssignment.status == AssignmentStatus.PENDING
         ).first()
         if assignmnet is None :
             raise HTTPException(
@@ -87,8 +87,8 @@ def accept_assignment_driver (db:Session,user:User,assignment_id:int) :
         other_assignmnts = db.query(DriverAssignment).filter(DriverAssignment.order_id == order.id).all()
         if other_assignmnts :
             for a in other_assignmnts :
-                a.status = AssignmenApplicationtStatus.EXPIRED
-        assignmnet.status = AssignmenApplicationtStatus.TAKEN
+                a.status = AssignmentStatus.EXPIRED
+        assignmnet.status = AssignmentStatus.TAKEN
         assignmnet.responded_at = datetime.now(timezone.utc)
         order.status = OrderStatus.ACCEPTED
         order.driver_id =driver.id

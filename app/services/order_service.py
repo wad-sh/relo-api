@@ -1,5 +1,5 @@
 from app.models.driver import Driver
-from app.schemas.order_schemas import OrderUpdateStatus,OrderCreate,Orderupdate
+from app.schemas.order_schemas import OrderUpdateStatus,OrderCreate,OrderUpdate
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.models.user import User
@@ -35,7 +35,7 @@ def create_order (db : Session, user: User,data: OrderCreate):
     db.refresh(new_order)
     return new_order
 
-def update_order (db : Session,order_id: int, user: User,data: Orderupdate):
+def update_order (db : Session,order_id: int, user: User,data: OrderUpdate):
     exist_user(db,user.id)
     order = exist_order(db,order_id)
     ur_order_customer(db,user,order_id)

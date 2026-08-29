@@ -23,7 +23,7 @@ class Order (Base) :
 
     status = Column(
         SQLEnum(OrderStatus),
-        default="pending",
+        default=OrderStatus.PENDING,
         nullable=False
     )
 
@@ -77,6 +77,15 @@ class Order (Base) :
         server_default=func.now(),
         nullable=False
     )
+
+
+    @property
+    def delivery_fee (self):
+        if self.type == OrderType.LOCAL:
+            return 10
+        if self.type == OrderType.ROUTE:
+            return 20
+
     order_owner = relationship(
         "User",
         back_populates="orders_made"

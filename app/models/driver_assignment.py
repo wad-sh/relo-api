@@ -1,7 +1,7 @@
 from app.database.database import Base
 from sqlalchemy import Column,String,Integer,ForeignKey,DateTime,func,Enum as SQLEnum
 from sqlalchemy.orm import relationship
-from app.enums.assignmentapplication import AssignmenApplicationtStatus
+from app.enums.assignment import AssignmentStatus
 
 class DriverAssignment (Base) :
     __tablename__ = "drivers_assignments"
@@ -33,14 +33,13 @@ class DriverAssignment (Base) :
             )
 
     status = Column(
-            SQLEnum(AssignmenApplicationtStatus),
-            default=AssignmenApplicationtStatus.WAITING,
+            SQLEnum(AssignmentStatus),
+            default=AssignmentStatus.WAITING,
             nullable=False
         )
 
     responded_at = Column(
-            DateTime(timezone=True),
-            nullable= False
+            DateTime(timezone=True)
         )
 
     order = relationship(

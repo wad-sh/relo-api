@@ -34,13 +34,8 @@ class OrderResponse (BaseModel) :
     address_receive: str
     address_delivery:str
     description: str
+    delivery_fee: int
     model_config = ConfigDict(from_attributes=True)
-
-class OrderResponseShort (BaseModel) :
-    id: int
-    type: OrderType
-    route_from: Governorate
-    route_to: Governorate  
 
 
 class OrderUpdateStatus (BaseModel ) : 

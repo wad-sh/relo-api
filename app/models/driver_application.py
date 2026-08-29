@@ -1,7 +1,8 @@
 from app.database.database import Base
 from sqlalchemy import Column,String,Integer,ForeignKey,DateTime,func,Enum as SQLEnum
 from sqlalchemy.orm import relationship
-from app.enums.assignmentapplication import AssignmenApplicationtStatus
+from app.enums.application import ApplicationStatus,VehicleType
+from app.enums.route_enum import Governorate
 
 class DriverApplication (Base) :
     __tablename__ = "drivers_applications"
@@ -25,22 +26,57 @@ class DriverApplication (Base) :
                     nullable=False
                 )
     
-    last_status_change = Column(
+    reviewed_at = Column(
             DateTime(timezone=True)
         )
     
     reviewed_by = Column(
         Integer,
         ForeignKey("users.id"),
-        index=True
     )
     
     status = Column(
-        SQLEnum(AssignmenApplicationtStatus),
-        default="pending",
+        SQLEnum(ApplicationStatus),
+        default=ApplicationStatus.PENDING,
         nullable=False
     )
 
+    vehicle_type=Column(
+        SQLEnum(VehicleType),
+        nullable=False
+    )
+
+    vehicle_model=Column(
+        String,nullable=False
+    )
+
+    vehicle_year=Column(
+        Integer,
+        nullable=False
+    )
+
+    vehicle_capacity_kg=Column(
+        Integer,
+        nullable=False
+    )
+
+    preferred_area = Column(
+        SQLEnum(Governorate),
+        nullable=False
+        )
+
+    preferred_route_from = Column(
+        SQLEnum(Governorate)
+    )
+
+    preferred_route_to =Column(
+        SQLEnum(Governorate)
+    )
+
+    description=Column(
+        String
+    )
+    
     applicant = relationship(
         "User",
         back_populates="applications",

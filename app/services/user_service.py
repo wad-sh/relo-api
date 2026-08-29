@@ -12,7 +12,7 @@ from app.models.trip import Trip
 from app.enums.order import OrderStatus
 from app.enums.trip import TripStatus
 from app.models.driver_application import DriverApplication
-from app.enums.assignmentapplication import AssignmenApplicationtStatus
+from app.enums.assignment import AssignmentStatus
 from pydantic import EmailStr
 
 
@@ -185,7 +185,7 @@ def can_update_or_delete (db: Session,user: User) :
 
     has_pending_application = db.query(DriverApplication).filter(
         DriverApplication.applicant_id == user.id,
-        DriverApplication.status == AssignmenApplicationtStatus.PENDING
+        DriverApplication.status == AssignmentStatus.PENDING
     ).first()
 
     if has_pending_application is not None:
