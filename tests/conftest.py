@@ -13,6 +13,7 @@ from app.models.driver import Driver
 from app.auth.security import password_hash
 from app.enums.application import VehicleType
 from app.models.order import Order
+from app.enums.driver_modes import DrivingMode
 
 
 
@@ -25,13 +26,14 @@ test_session_local = sessionmaker (
 )
 
 @pytest.fixture
-def db_session ():
-    Base.metadata.create_all(bind= test_engine)
-
+def db_session():
+    Base.metadata.create_all(bind=test_engine)
     db = test_session_local()
-    yield db
-    db.close()
-    Base.metadata.drop_all(bind= test_engine)
+    try:
+        yield db
+    finally:
+        db.close()
+        Base.metadata.drop_all(bind=test_engine)
 
 @pytest.fixture
 def client (db_session) :
@@ -56,11 +58,10 @@ def user (client,db_session) :
     )
 
     assert response.status_code == 200
-    userrr = db_session.query(User).filter(
-        User.username == "tt1"
-    ).first()
+    db_session.expire_all()
 
-    return userrr
+
+    return db_session.query(User).filter(User.username == "tt1").first()
 
 @pytest.fixture
 def user_token (client,user) :
@@ -89,7 +90,8 @@ def driver_default (db_session) :
     db_session.flush()
 
     driver = Driver(
-        id= user_driver.id
+        id= user_driver.id,
+        local_operating_area= Governorate.HEBRON
     )
 
     db_session.add(driver)
@@ -121,7 +123,7 @@ def active_trip (client,token_driver_default) :
         }
     )
     assert r.status_code == 200
-    assert "created_at" in r.json()
+    assert "id" in r.json()
     return r.json()
 
 
@@ -148,7 +150,7 @@ def accepted_order (db_session,user,driver_default):
         order_owner_id=user.id,
         status= OrderStatus.ACCEPTED,
         type= OrderType.LOCAL,
-        operating_area= Governorate.SALFIT,
+        operating_area= Governorate.HEBRON,
         address_receive="from there",
         address_delivery= "to there",
         description= "laptop",
@@ -159,3 +161,37 @@ def accepted_order (db_session,user,driver_default):
     db_session.commit()
     db_session.refresh(order)
     return order
+
+@pytest.fixture
+def driver_trip (db_session) :
+    user_driver = User(
+            username = "driver12",
+            email = "test3333@gmail.com",
+            phone_number= "0597900797",
+            hashed_password= password_hash("12345678"),
+            role = UserEnum.Driver
+    )
+    db_session.add(user_driver)
+    db_session.flush()
+
+    driver = Driver(
+        id= user_driver.id,
+        mode = DrivingMode.TRIP
+    )
+
+    db_session.add(driver)
+    db_session.commit()
+    return driver
+
+@pytest.fixture
+def token_driver_trip(client, driver_trip):
+    r = client.post(
+        "/users/login",
+        data={
+            "username": "driver12",
+            "password": "12345678"
+        }
+    )
+
+    assert r.status_code == 200
+    return r.json()["access_token"]

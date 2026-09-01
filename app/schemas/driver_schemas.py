@@ -18,5 +18,5 @@ class DriverResponse (BaseModel) :
     phone_number : str
     role : UserEnum
     mode : DrivingMode
-    operating_area : Governorate| None
+    local_operating_area  : Governorate| None
     model_config = ConfigDict(from_attributes=True)

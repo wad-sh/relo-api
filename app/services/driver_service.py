@@ -23,10 +23,11 @@ def update_mode_driver(
 ):
     valid_update(db, user)
 
-    if data.mode == user.driver.mode and data.operating_area == user.driver.area:
+
+    if data.mode == user.driver.mode and data.operating_area == user.driver.local_operating_area :
         raise HTTPException(
-            status_code=409,
-            detail="no change"
+            status_code=400,
+            detail="your informations already like that"
         )
 
     final_mode = data.mode
@@ -43,26 +44,41 @@ def update_mode_driver(
         final_area = None
 
     user.driver.mode = final_mode
-    user.driver.area = final_area
+    user.driver.local_operating_area = final_area
 
     db.commit()
     db.refresh(user)
 
-    return user.driver
+    return  {
+    "id": user.id,
+    "username": user.username,
+    "email": user.email,
+    "phone_number": user.phone_number,
+    "role": user.role,
+    "mode": user.driver.mode,
+    "local_operating_area": user.driver.local_operating_area
+}
 
 
 def update_area_driver (db: Session,user: User ,data : OperatingArea) : 
     valid_area_update(db,user)
-    if data.area == user.driver.area :
+    if data.area == user.driver.local_operating_area :
           raise HTTPException(
-                status_code= 409,
+                status_code= 400,
                 detail= "no change"
           )
     
-    user.driver.area = data.area
+    user.driver.local_operating_area = data.area
     db.commit()
     db.refresh(user)
-    return user.driver
+    return  {
+    "id": user.id,
+    "username": user.username,
+    "email": user.email,
+    "phone_number": user.phone_number,
+    "role": user.role,
+    "mode": user.driver.mode,
+    "local_operating_area": user.driver.local_operating_area}
           
 
 def valid_update (db: Session, user:User) :
