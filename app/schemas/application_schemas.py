@@ -8,8 +8,8 @@ class ApplicationResponse (BaseModel):
     applicant_id:int
     created_at:datetime
     status:ApplicationStatus
-    reviewed_by :int
-    reviewed_at:datetime
+    reviewed_by :int| None = None
+    reviewed_at:datetime| None = None
     model_config = ConfigDict(from_attributes=True)
 
 

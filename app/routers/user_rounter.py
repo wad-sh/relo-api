@@ -20,7 +20,7 @@ def register (data:UserRegister ,db: Session = Depends(get_db)) :
 
 
 @user_router.post("/login",response_model=Token)
-def login (data:OAuth2PasswordRequestForm,db: Session = Depends(get_db)) :
+def login (data:OAuth2PasswordRequestForm= Depends(),db: Session = Depends(get_db)) :
     return login_user(db,data)
 
 @user_router.delete ("/me" , response_model=dict)
@@ -31,7 +31,7 @@ def delete (db: Session = Depends(get_db), user: User = Depends(get_current_user
 def update_email_username (data: UserUpdate, db: Session = Depends(get_db), user: User = Depends(get_current_user)) :
     return update_user(db,user,data)
 
-@user_router.put("/password",response_model=UserResponse)
+@user_router.put("/password",response_model=dict)
 def update_password (data: UserPasswordUpdate, db: Session = Depends(get_db), user: User = Depends(get_current_user)) :
     return update_password_user(db,user,data)
 

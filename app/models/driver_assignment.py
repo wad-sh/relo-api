@@ -44,10 +44,10 @@ class DriverAssignment (Base) :
 
     order = relationship(
         "Order",
-        back_populates="assignmemts"
+        back_populates="assignments"
     )
 
     driver = relationship(
         "Driver",
-        back_populates="assignmemts"
+        back_populates="assignments"
     )

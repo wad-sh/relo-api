@@ -47,9 +47,16 @@ class User (Base) :
     )
 
     applications = relationship(
-            "DriverApplication",
-            back_populates="applicant"
-        )
+        "DriverApplication",
+        back_populates="applicant",
+        foreign_keys="DriverApplication.applicant_id"
+    )
+
+    reviewed_applications = relationship(
+        "DriverApplication",
+        back_populates="reviewer",
+        foreign_keys="DriverApplication.reviewed_by"
+    )
     
     driver = relationship(
         "Driver",
@@ -58,7 +65,3 @@ class User (Base) :
         cascade="all, delete-orphan"
     )
 
-    reviewed_applications = relationship(
-            "DriverApplication",
-            back_populates="reviewer"
-        )

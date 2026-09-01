@@ -10,15 +10,13 @@ class UserRegister (BaseModel) :
 
     email : EmailStr
 
-    phone_number : str = Field(
-        min_length=10,
-        max_length=13,
-        pattern=r"^/+?[0-9]+$"
-    )
+    phone_number: str = Field(
+            min_length=10, max_length=13
+        )
 
     password : str = Field(
         min_length=8,
-        max_length=72,
+        max_length=72
     )
 
 class UserResponse (BaseModel) :
@@ -43,12 +41,11 @@ class UserPhoneUpdate (BaseModel) :
 
     phone_number : str  = Field(
         min_length=10,
-        max_length=13,
-        pattern=r"^/+?[0-9]+$"
+        max_length=13
     )
 
 class UserPasswordUpdate (BaseModel) :
     password : str  = Field(
         min_length=8,
-        max_length=72,
+        max_length=32,
     )

@@ -12,6 +12,7 @@ from app.models.trip import Trip
 from app.enums.order import OrderStatus
 from app.enums.trip import TripStatus
 from app.models.driver_application import DriverApplication
+from app.enums.application import ApplicationStatus
 from app.enums.assignment import AssignmentStatus
 from pydantic import EmailStr
 
@@ -27,6 +28,7 @@ def create_user (db: Session, data : UserRegister) :
     new_user = User(
             username = data.username,
             email = data.email,
+            phone_number=data.phone_number,
             hashed_password = hashed_pw,
             role=UserEnum.Customer
         )
@@ -43,7 +45,7 @@ def login_user (db: Session,data:OAuth2PasswordRequestForm) :
     if not user :
         raise HTTPException (
             status_code=401,
-            detail="wrong email or password"
+            detail="wrong email/username or password"
         )
     hashed = user.hashed_password
     pw = password_verify (data.password,hashed)
@@ -76,20 +78,20 @@ def update_password_user (db: Session,user :User,data:UserPasswordUpdate) :
     exist_user(db,user.id)
     if password_verify(data.password,user.hashed_password) :
          raise HTTPException(
-              status_code=409,
+              status_code=400,
               detail="can not use the same password"
          )
     hashed_pw = password_hash(data.password)
     user.hashed_password = hashed_pw
     db.commit()
     db.refresh(user)
-    return user
+    return {"message" : "password has been changed successfully"}
 
 def update_phone_user (db:Session, user:User, data:UserPhoneUpdate) :
     exist_user(db,user.id)
     if user.phone_number == data.phone_number:
          raise HTTPException(
-              status_code=409,
+              status_code=400,
               detail="no change"
          )
     user.phone_number = data.phone_number
@@ -109,10 +111,34 @@ def update_user (db: Session,user :User,data:UserUpdate) :
              detail="no change"
         )
 
-    if data.username is not None and exist_username(db,data.username) == False :
+    if data.username is not None:
+        if data.username == user.username:
+            raise HTTPException(
+                status_code=400,
+                detail="this username is already yours"
+            )
+
+        if exist_username(db, data.username):
+            raise HTTPException(
+                status_code=409,
+                detail="username already existed"
+            )
+
         user.username = data.username
 
-    if data.email is not None and exist_email(db,data.email) == False :
+    if data.email is not None:
+        if data.email == user.email:
+            raise HTTPException(
+                status_code=400,
+                detail="email still the same"
+            )
+
+        if exist_email(db, data.email):
+            raise HTTPException(
+                status_code=409,
+                detail="email already existed"
+            )
+
         user.email = data.email
 
     db.commit()
@@ -185,7 +211,7 @@ def can_update_or_delete (db: Session,user: User) :
 
     has_pending_application = db.query(DriverApplication).filter(
         DriverApplication.applicant_id == user.id,
-        DriverApplication.status == AssignmentStatus.PENDING
+        DriverApplication.status == ApplicationStatus.PENDING
     ).first()
 
     if has_pending_application is not None:

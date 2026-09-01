@@ -106,8 +106,8 @@ class Order (Base) :
         back_populates="order",
     )
 
-    assignmemts = relationship(
-        "DriverAssignment",
-        back_populates="order",
-        cascade="all, delete-orphan"
-    )
+    assignments = relationship(
+            "DriverAssignment",
+            back_populates="order",
+            cascade="all, delete-orphan"
+        )

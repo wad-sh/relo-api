@@ -40,8 +40,8 @@ def get_current_user (db: Session = Depends(get_db),token :str = Depends(token_r
     
     if current_user is None :
         raise HTTPException(
-                status_code=401,
-                detail="invalid token"
+                status_code=404,
+                detail="no user has been found"
         )
 
     return current_user

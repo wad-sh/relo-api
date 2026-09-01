@@ -12,7 +12,7 @@ class OrderCreateLocal (BaseModel) :
     description: str
 
 class OrderCreateRoute (BaseModel) :
-    type: Literal[OrderType.LOCAL]
+    type: Literal[OrderType.ROUTE]
     route_from: Governorate 
     route_to: Governorate 
     address_receive: str
@@ -21,7 +21,7 @@ class OrderCreateRoute (BaseModel) :
 
 OrderCreate = Annotated[
     Union[OrderCreateLocal,OrderCreateRoute],
-    Field(discriminator=type)
+    Field(discriminator="type")
 ]
 
 
