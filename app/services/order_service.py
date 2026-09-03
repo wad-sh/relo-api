@@ -106,7 +106,7 @@ def update_status_admin_order (db: Session, order_id : int, data: OrderUpdateSta
     old_status = order.status
     if old_status == data.status:
         raise HTTPException(
-        status_code=409,
+        status_code=400,
         detail="no change"
     )
     order.status = data.status
@@ -116,6 +116,11 @@ def update_status_admin_order (db: Session, order_id : int, data: OrderUpdateSta
     db.add(history)
     if order.status != OrderStatus.PENDING:
         cancel_assignment(db, order)
+    if order.status == OrderStatus.PENDING:
+
+        order.driver_id = None
+
+        create_assignment(db, order)
     db.commit()
     db.refresh(order)
     db.refresh(history)
@@ -133,7 +138,7 @@ def update_status_order (db: Session, order_id : int,user:User):
         else:
             raise HTTPException(
                 status_code=409,
-                detail="order already delivered"
+                detail="failed to update"
             )
         history = create_history(order_id,old_status,order.status,user.id)
         db.add(history)
@@ -178,7 +183,10 @@ def make_order_avilable(db:Session,user:User,order_id:int) :
     create_assignment(db, order)
 
     db.commit()
-    return order
+    return {
+        "message" : "done making the order avilable again"
+    }
+
 
 
 
@@ -237,6 +245,6 @@ def valid_order_cancel_driver (db:Session,order_id:int):
     order=db.query(Order).filter(Order.id == order_id).first()
     if order.status != OrderStatus.ACCEPTED:
         raise HTTPException(
-            status_code=409,
+            status_code=400,
             detail="can't make the order avilable again"
         )

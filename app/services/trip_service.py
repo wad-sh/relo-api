@@ -53,7 +53,7 @@ def update_route_trip (db: Session,user:User,trip_id: int ,data: TripUpdateroute
         )
     if    trip.route_to == data.route_to and trip.route_from == data.route_from:
         raise HTTPException(
-            status_code=409,
+            status_code=400,
             detail="no change"
         )
     trip.route_to = data.route_to
@@ -77,7 +77,7 @@ def update_status_trip (db: Session,user:User,trip_id: int) :
         trip.status = TripStatus.COMPLETED
     else :
         raise HTTPException(
-            status_code=409,
+            status_code=400,
             detail="only liner change for trips status"
         )
     db.commit()
@@ -129,7 +129,7 @@ def valid_mode (user:User) :
     if user.driver.mode not in [Mode.TRIP,Mode.FLEXIBLE] :
             raise HTTPException(
                  status_code=400,
-                 detail="mode should be trip or flexible to change area"
+                 detail="mode should be trip or flexible"
             )
 
 def no_trips_driver (db: Session,user:User) :

@@ -34,10 +34,10 @@ def update_status_admin (data:TripUpdateStatus,trip_id: int,db:Session =Depends(
 def delete (trip_id: int,user: User = Depends(get_current_user),db:Session =Depends(get_db)):
     return delete_trip(db,user,trip_id)
 
-@trip_router.get("",response_class=List[TripResponse])
-def get_by_route (data: Tripsearsh,db:Session= Depends(get_db)):
+@trip_router.get("/all",response_model=List[TripResponse])
+def get_by_route (data: Tripsearsh= Depends(),db:Session= Depends(get_db)):
     return get_planned_trips_by_route(db,data)
 
-@trip_router.get("",response_class=list[TripResponse])
+@trip_router.get("/driver",response_model=list[TripResponse])
 def get_mine (user: User = Depends(get_current_user),db:Session= Depends(get_db)):
     return get_my_trips(db,user)

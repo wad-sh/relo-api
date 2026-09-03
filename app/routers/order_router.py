@@ -45,6 +45,6 @@ def get_for_customer (user:User =Depends(get_current_user)  ,db:Session=Depends(
 def get_for_driver (user:User =Depends(get_current_user)  ,db:Session=Depends(get_db)):
     return get_my_orders_driver(db,user)
 
-@order_router.put("/{order_id}/make-avilable",response_model=OrderResponse)
+@order_router.put("/{order_id}/make-avilable",response_model=dict)
 def make_avilable (order_id:int,user:User =Depends(get_current_user)  ,db:Session=Depends(get_db)):
     return make_order_avilable(db,user,order_id)
