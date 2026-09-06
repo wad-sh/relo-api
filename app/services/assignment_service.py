@@ -16,23 +16,32 @@ from app.enums.assignment import AssignmentStatus
 from datetime import datetime,timezone
 from app.enums.trip import TripStatus
 
-def create_assignment (db:Session,order:Order) :
+def create_assignment(db: Session, order: Order):
     if order.type == OrderType.LOCAL:
-        drivers = db.query(Driver).filter(Driver.mode==Mode.LOCAL,Driver.local_operating_area == order.operating_area).all()
-      
-    elif order.type == OrderType.ROUTE:
-        drivers = db.query(Driver).join(Trip).filter(
-            Driver.mode==Mode.TRIP,
-            Trip.route_from == order.route_from,
-            Trip.route_to==order.route_to,
-            Trip.status == TripStatus.PLANNED
-            ).all()
+        drivers = db.query(Driver).filter(
+            Driver.mode.in_([Mode.LOCAL, Mode.FLEXIBLE]),
+            Driver.local_operating_area == order.operating_area
+        ).all()
 
-    for driver in drivers :
+    elif order.type == OrderType.ROUTE:
+        drivers = db.query(Driver).filter(
+            Driver.mode == Mode.FLEXIBLE
+        ).all()
+
+        trip_drivers = db.query(Driver).join(Trip).filter(
+            Driver.mode == Mode.TRIP,
+            Trip.route_from == order.route_from,
+            Trip.route_to == order.route_to,
+            Trip.status == TripStatus.PLANNED
+        ).all()
+
+        drivers += trip_drivers
+
+    for driver in drivers:
         new_assignment = DriverAssignment(
-                order_id = order.id,
-                driver_id = driver.id
-            )
+            order_id=order.id,
+            driver_id=driver.id
+        )
         db.add(new_assignment)
 
 

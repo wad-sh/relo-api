@@ -256,7 +256,7 @@ def admin(db_session) :
         email="em@gmail.com",
         hashed_password = password_hash("12345678"),
         role = UserEnum.Admin,
-        phone_number="0567676769"
+        phone_number="0567670069"
     )
 
         db_session.add(admin)
@@ -269,7 +269,7 @@ def admin_token (client,admin) :
     response = client.post(
             "/users/login",
             data={
-                "username" : admin.username,
+                "username" : "un",
                 "password" : "12345678"
             }
         )
@@ -313,7 +313,7 @@ def pending_order_local (client,user_token,driver_default) :
     )
     assert r.status_code == 200
     assert "id" in r.json()
-    return r.json["id"]
+    return r.json()["id"]
 
 @pytest.fixture
 def pending_order_route (client,user_token,driver_default) :
@@ -357,7 +357,7 @@ def completed_order (db_session,user,driver_default):
 @pytest.fixture
 def driver_default_2 (db_session) :
     user_driver = User(
-            username = "tt22",
+            username = "ttx22",
             email = "test22@gmail.com",
             phone_number= "0597979727",
             hashed_password= password_hash("12345678"),
@@ -375,14 +375,48 @@ def driver_default_2 (db_session) :
     db_session.commit()
     return driver
 @pytest.fixture
-def token_driver_default_2(client, driver_default):
+def token_driver_default_2(client, driver_default_2):
     r = client.post(
         "/users/login",
         data={
-            "username": "tt22",
+            "username": "ttx22",
             "password": "12345678"
         }
     )
 
     assert r.status_code == 200
     return r.json()["access_token"]
+
+@pytest.fixture
+def error_order_local(db_session, user):
+    order = Order(
+        order_owner_id=user.id,
+        status=OrderStatus.ERROR,
+        type=OrderType.LOCAL,
+        operating_area=Governorate.HEBRON,
+        address_receive="from there",
+        address_delivery="to there",
+        description="laptop",
+    )
+
+    db_session.add(order)
+    db_session.commit()
+    db_session.refresh(order)
+    return order.id
+
+@pytest.fixture 
+def pending_order_local_2 (client,user_token,driver_default) :
+    r=client.post(
+        "/orders",
+        headers={"Authorization" : f"Bearer {user_token}"},
+        json={
+    "type" : OrderType.LOCAL,
+    "operating_area" : Governorate.HEBRON,
+    "address_receive":"from",
+    "address_delivery": "to",
+    "description": "keys",
+        }
+    )
+    assert r.status_code == 200
+    assert "id" in r.json()
+    return r.json()["id"]

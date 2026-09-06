@@ -18,15 +18,25 @@ def create_order (db : Session, user: User,data: OrderCreate):
     exist_user(db,user.id)
     valid_area_route(data)
 
-    new_order = Order(
-    type = data.type,
-    operating_area = data.operating_area,
-    route_from= data.route_from,
-    route_to=data.route_to,
-    address_receive=data.address_receive,
-    address_delivery=data.address_delivery,
-    description=data.description,
-    )
+    if data.type == OrderType.ROUTE: 
+        new_order = Order(
+        type = data.type,
+        order_owner_id = user.id,
+        route_from= data.route_from,
+        route_to=data.route_to,
+        address_receive=data.address_receive,
+        address_delivery=data.address_delivery,
+        description=data.description,
+        )
+    elif data.type == OrderType.LOCAL:
+        new_order = Order(
+        type = data.type,
+        order_owner_id = user.id,
+        operating_area = data.operating_area,
+        address_receive=data.address_receive,
+        address_delivery=data.address_delivery,
+        description=data.description,
+        )
 
     db.add(new_order)
     db.flush()
@@ -100,7 +110,7 @@ def update_order (db : Session,order_id: int, user: User,data: OrderUpdate):
     db.refresh(order)
     return order
 
-def update_status_admin_order (db: Session, order_id : int, data: OrderUpdateStatus,more_details:str,admin: User) :
+def update_status_admin_order (db: Session, order_id : int, data: OrderUpdateStatus,admin: User) :
     order = exist_order(db,order_id)
     
     old_status = order.status
@@ -111,7 +121,7 @@ def update_status_admin_order (db: Session, order_id : int, data: OrderUpdateSta
     )
     order.status = data.status
     
-    history = create_history(order_id,old_status,order.status,admin.id,more_details)
+    history = create_history(order_id,old_status,order.status,admin.id,data.more_details)
 
     db.add(history)
     if order.status != OrderStatus.PENDING:
@@ -191,17 +201,6 @@ def make_order_avilable(db:Session,user:User,order_id:int) :
 
 
 def valid_area_route (data) :
-    if (data.type == OrderType.LOCAL) and (data.operating_area is None):
-        raise HTTPException(
-            status_code=400,
-            detail="add operating area for local orders"
-        )
-    if (data.type == OrderType.ROUTE) and (data.route_from is None or data.route_to is None):
-        raise HTTPException(
-            status_code=400,
-            detail="add full route for the order"
-        )
-
     if(data.type == OrderType.ROUTE) and (data.route_to == data.route_from) :
             raise HTTPException(
              status_code=400,

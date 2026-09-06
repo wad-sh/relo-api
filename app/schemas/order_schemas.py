@@ -35,11 +35,13 @@ class OrderResponse (BaseModel) :
     address_delivery:str
     description: str
     delivery_fee: int
+    status:OrderStatus
     model_config = ConfigDict(from_attributes=True)
 
 
 class OrderUpdateStatus (BaseModel ) : 
     status : OrderStatus
+    more_details: str
 
 
 class OrderUpdate (BaseModel) :

@@ -38,36 +38,6 @@ def test_create_order_route_successful (client, user_token) :
     assert r.status_code == 200
     assert "id" in r.json()
 
-def test_create_order_local_no_area (client, user_token) :
-    r=client.post(
-        "/orders",
-        headers={"Authorization" : f"Bearer {user_token}"},
-        json={
-    "type" : OrderType.LOCAL,
-    "operating_area" : None,
-    "address_receive":"from",
-    "address_delivery": "to",
-    "description": "keys",
-        }
-    )
-    assert r.status_code == 400
-    assert r.json()["detail"] == "add operating area for local orders"
-
-def test_create_order_route_no_route (client, user_token) :
-    r=client.post(
-        "/orders",
-        headers={"Authorization" : f"Bearer {user_token}"},
-        json={
-    "type" : OrderType.ROUTE,
-    "route_from" : None,
-    "route_to" : None,
-    "address_receive":"there",
-    "address_delivery": "to",
-    "description": " 500g",
-        }
-    )
-    assert r.status_code == 400
-    assert r.json()["detail"] == "add full route for the order"
 
 def test_create_order_route_same_from_to (client, user_token) :
     r=client.post(
@@ -205,7 +175,7 @@ def test_order_update_invalid_route (client,user_token,pending_order_local):
     assert r.status_code == 400
     assert r.json()["detail"] == "invalid route"
 
-def test_order_update_successful (db_session,client,user_token,pending_order_local):
+def test_order_update_not_found (db_session,client,user_token,pending_order_local):
     order = db_session.query(Order).filter(Order.id == pending_order_local).first()
     db_session.delete(order)
     db_session.commit()
@@ -228,9 +198,10 @@ def test_order_update_successful (db_session,client,user_token,pending_order_loc
 def test_order_status_update_admin_successful (db_session,client,admin_token,pending_order_local) :
     r=client.put(
         f"/orders/{pending_order_local}/status/admin",
-        {"Authorization" : f"Bearer {admin_token}"},
+        headers={"Authorization" : f"Bearer {admin_token}"},
         json={
-            "status" : OrderStatus.ERROR
+            "status" : OrderStatus.ERROR,
+            "more_details" : "did it because of ..."
         }
     )
 
@@ -240,17 +211,18 @@ def test_order_status_update_admin_successful (db_session,client,admin_token,pen
     assert history is not None
     assert history.new_status == OrderStatus.ERROR
 
-def test_order_status_update_admin_to_pending_successful (db_session,client,admin_token,pending_order_local,driver_default) :
+def test_order_status_update_admin_to_pending_successful (db_session,client,admin_token,error_order_local,driver_default) :
     r=client.put(
-        f"/orders/{pending_order_local}/status/admin",
-        {"Authorization" : f"Bearer {admin_token}"},
+        f"/orders/{error_order_local}/status/admin",
+        headers={"Authorization" : f"Bearer {admin_token}"},
         json={
-            "status" : OrderStatus.PENDING
+            "status" : OrderStatus.PENDING,
+            "more_details" : "did it because of ..."
         }
     )
 
-    history = db_session.query(HistoryOrder).filter(HistoryOrder.id==pending_order_local).first()
-    assignments = db_session.query(DriverAssignment).filter(DriverAssignment.order_id == pending_order_local).all()
+    history = db_session.query(HistoryOrder).filter(HistoryOrder.id==error_order_local).first()
+    assignments = db_session.query(DriverAssignment).filter(DriverAssignment.order_id == error_order_local,DriverAssignment.status == AssignmentStatus.WAITING).all()
     assert r.status_code == 200
     assert r.json()["status"] == OrderStatus.PENDING
     assert history is not None
@@ -260,13 +232,14 @@ def test_order_status_update_admin_to_pending_successful (db_session,client,admi
 def test_order_status_update_admin_no_change (client,admin_token,pending_order_local) :
     r=client.put(
         f"/orders/{pending_order_local}/status/admin",
-        {"Authorization" : f"Bearer {admin_token}"},
+        headers={"Authorization" : f"Bearer {admin_token}"},
         json={
-            "status" : OrderStatus.PENDING
+            "status" : OrderStatus.PENDING,
+            "more_details" : "did it because of ..."
         }
     )
     assert r.status_code == 400
-    assert r.json()["status"] == "no change"
+    assert r.json()["detail"] == "no change"
 
 
 def test_update_status_successful (client,db_session,token_driver_default,accepted_order) :
@@ -313,12 +286,12 @@ def test_get_my_orders_driver_successful (client,token_driver_default):
 
     assert r.status_code == 200
 
-def test_cancel_order_successful (db_session,client,user_token,pending_order_local) :
+def test_cancel_order_successful (db_session,client,user_token,pending_order_local_2,driver_default) :
     r= client.put(
-        f"/orders/{pending_order_local}/cancel",
+        f"/orders/{pending_order_local_2}/cancel",
         headers={"Authorization" : f"Bearer {user_token}"}
     )
-    assignment = db_session.query(DriverAssignment).filter(DriverAssignment.order_id == pending_order_local).first()
+    assignment = db_session.query(DriverAssignment).filter(DriverAssignment.order_id == pending_order_local_2,DriverAssignment.status == AssignmentStatus.EXPIRED).first()
     assert r.status_code == 200
     assert assignment is not None
     assert assignment.status == AssignmentStatus.EXPIRED

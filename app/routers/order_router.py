@@ -30,10 +30,10 @@ def update_status (order_id:int,user:User =Depends(get_current_user)  ,db:Sessio
     return update_status_order(db,order_id,user)
 
 @order_router.put("/{order_id}/status/admin",response_model=OrderResponse)
-def update_status_admin (data:OrderUpdateStatus,order_id:int,more_details: str,admin:User = Depends(requires_admin),db:Session=Depends(get_db)):
-    return update_status_admin_order(db,order_id,data,more_details,admin)
+def update_status_admin (data:OrderUpdateStatus,order_id:int,admin:User = Depends(requires_admin),db:Session=Depends(get_db)):
+    return update_status_admin_order(db,order_id,data,admin)
 
-@order_router.put("/{order_id}/cancel",response_model=OrderResponse)
+@order_router.put("/{order_id}/cancel",response_model=dict)
 def cancel (order_id:int,user:User =Depends(get_current_user)  ,db:Session=Depends(get_db)):
     return cancel_order(db,user,order_id)
 

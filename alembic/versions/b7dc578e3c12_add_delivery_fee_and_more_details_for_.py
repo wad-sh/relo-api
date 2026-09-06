@@ -1,4 +1,3 @@
-
 """add delivery fee and more details for driver application
 
 Revision ID: b7dc578e3c12
@@ -201,14 +200,7 @@ def upgrade() -> None:
         """
     )
 
-    # Remove old ENUM type.
-    op.execute(
-        """
-        DROP TYPE IF EXISTS assignmenapplicationtstatus
-        """
-    )
-
-    # Convert status values back to the new ENUM.
+    # Convert status values to the new ENUM.
     op.execute(
         """
         ALTER TABLE drivers_applications
@@ -254,6 +246,13 @@ def upgrade() -> None:
                 WHEN 'EXPIRED' THEN 'EXPIRED'
             END
         )::assignmentstatus
+        """
+    )
+
+    # The old ENUM type is no longer used by either table.
+    op.execute(
+        """
+        DROP TYPE IF EXISTS assignmenapplicationtstatus
         """
     )
 
@@ -521,4 +520,3 @@ def downgrade() -> None:
     op.execute("DROP TYPE IF EXISTS assignmentstatus")
     op.execute("DROP TYPE IF EXISTS applicationstatus")
     op.execute("DROP TYPE IF EXISTS vehicletype")
-
