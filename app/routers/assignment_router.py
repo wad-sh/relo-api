@@ -5,12 +5,13 @@ from app.database.database import get_db
 from sqlalchemy.orm import Session
 from app.auth.dep import get_current_user
 from app.models.user import User
+from typing import List
 
 assignment_router = APIRouter(
     tags=["Assignment"]
 )
 
-@assignment_router.get ("/my/assignments", response_model=AssignmentResponse)
+@assignment_router.get ("/my/assignments", response_model=List[AssignmentResponse])
 def get_my_assignments (db:Session = Depends(get_db),user:User = Depends(get_current_user)):
     return get_assignmnet_driver(db,user)
 

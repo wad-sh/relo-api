@@ -11,6 +11,7 @@ from app.enums.order import OrderStatus,OrderType
 from app.models.history_order import HistoryOrder
 
 
+
 def create_history (o_id: int,old_s: OrderStatus,new_s:OrderStatus,u_id:int,det: str | None = None) :
     new_history = HistoryOrder(
         order_id = o_id,
@@ -23,6 +24,8 @@ def create_history (o_id: int,old_s: OrderStatus,new_s:OrderStatus,u_id:int,det:
 
 
 def get_by_order(db:Session,order_id:int) : 
+    from app.services.order_service import exist_order
+    exist_order(db,order_id)
     return db.query(HistoryOrder).filter(HistoryOrder.order_id==order_id).all()
 
 

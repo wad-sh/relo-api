@@ -64,7 +64,7 @@ def accept_assignment_driver (db:Session,user:User,assignment_id:int) :
         assignmnet = db.query(DriverAssignment).filter(
             DriverAssignment.id == assignment_id,
             DriverAssignment.driver_id == user.id,
-            DriverAssignment.status == AssignmentStatus.PENDING
+            DriverAssignment.status == AssignmentStatus.WAITING
         ).first()
         if assignmnet is None :
             raise HTTPException(
@@ -107,7 +107,7 @@ def accept_assignment_driver (db:Session,user:User,assignment_id:int) :
     except HTTPException :
         db.rollback()
         raise
-    except Exception :
+    except Exception:
         db.rollback()
         raise HTTPException(
             status_code=500,

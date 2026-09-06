@@ -420,3 +420,88 @@ def pending_order_local_2 (client,user_token,driver_default) :
     assert r.status_code == 200
     assert "id" in r.json()
     return r.json()["id"]
+
+@pytest.fixture 
+def pending_order_local_3 (client,user_token,driver_default) :
+    r=client.post(
+        "/orders",
+        headers={"Authorization" : f"Bearer {user_token}"},
+        json={
+    "type" : OrderType.LOCAL,
+    "operating_area" : Governorate.HEBRON,
+    "address_receive":"from",
+    "address_delivery": "to",
+    "description": "keys",
+        }
+    )
+    assert r.status_code == 200
+    assert "id" in r.json()
+    return r.json()["id"]
+
+@pytest.fixture 
+def pending_order_local_4 (client,user_token,driver_default) :
+    r=client.post(
+        "/orders",
+        headers={"Authorization" : f"Bearer {user_token}"},
+        json={
+    "type" : OrderType.LOCAL,
+    "operating_area" : Governorate.HEBRON,
+    "address_receive":"from",
+    "address_delivery": "to",
+    "description": "keys",
+        }
+    )
+    assert r.status_code == 200
+    assert "id" in r.json()
+    return r.json()["id"]
+
+@pytest.fixture 
+def pending_order_local_5 (client,user_token,driver_default) :
+    r=client.post(
+        "/orders",
+        headers={"Authorization" : f"Bearer {user_token}"},
+        json={
+    "type" : OrderType.LOCAL,
+    "operating_area" : Governorate.HEBRON,
+    "address_receive":"from",
+    "address_delivery": "to",
+    "description": "keys",
+        }
+    )
+    assert r.status_code == 200
+    assert "id" in r.json()
+    return r.json()["id"]
+
+@pytest.fixture 
+def pending_order_local_6 (client,user_token,driver_default) :
+    r=client.post(
+        "/orders",
+        headers={"Authorization" : f"Bearer {user_token}"},
+        json={
+    "type" : OrderType.LOCAL,
+    "operating_area" : Governorate.HEBRON,
+    "address_receive":"from",
+    "address_delivery": "to",
+    "description": "keys",
+        }
+    )
+    assert r.status_code == 200
+    assert "id" in r.json()
+    return r.json()["id"]
+
+@pytest.fixture 
+def pending_order_local_7 (client,user_token,driver_default) :
+    r=client.post(
+        "/orders",
+        headers={"Authorization" : f"Bearer {user_token}"},
+        json={
+    "type" : OrderType.LOCAL,
+    "operating_area" : Governorate.HEBRON,
+    "address_receive":"from",
+    "address_delivery": "to",
+    "description": "keys",
+        }
+    )
+    assert r.status_code == 200
+    assert "id" in r.json()
+    return r.json()["id"]

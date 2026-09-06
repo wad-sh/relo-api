@@ -5,6 +5,7 @@ from app.enums.assignment import AssignmentStatus
 from datetime import datetime
 
 class AssignmentResponse (BaseModel) :
+    id:int
     order_id: int
     driver_id :int
     status:AssignmentStatus
