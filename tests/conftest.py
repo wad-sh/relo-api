@@ -505,3 +505,25 @@ def pending_order_local_7 (client,user_token,driver_default) :
     assert r.status_code == 200
     assert "id" in r.json()
     return r.json()["id"]
+
+
+@pytest.fixture
+def app_ (client,user_token) :
+    r=client.post(
+        "/applications",
+        headers={"Authorization" : f"Bearer {user_token}"},
+        json={
+            "vehicle_type" : VehicleType.TRUCK,
+            "vehicle_model" : "XX",
+            "vehicle_year" : 1999,
+            "vehicle_capacity_kg" : 500,
+            "preferred_area" : Governorate.JERUSALEM,
+            "preferred_route_from" :None,
+            "preferred_route_to" :None,
+            "description" :None
+        }
+    )
+
+    assert r.status_code == 200
+    assert "id" in r.json()
+    return r.json()["id"]

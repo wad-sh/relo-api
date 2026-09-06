@@ -15,6 +15,6 @@ assignment_router = APIRouter(
 def get_my_assignments (db:Session = Depends(get_db),user:User = Depends(get_current_user)):
     return get_assignmnet_driver(db,user)
 
-@assignment_router.post("/assignmnts/{assignment_id}/accept",response_model=AssignmentResponse)
+@assignment_router.put("/assignmnts/{assignment_id}/accept",response_model=AssignmentResponse)
 def accept_assignment (assignment_id:int,db:Session=Depends(get_db),user:User=Depends(get_current_user)):
     return accept_assignment_driver(db,user,assignment_id)

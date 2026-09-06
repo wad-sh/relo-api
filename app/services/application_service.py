@@ -20,7 +20,7 @@ def create_application (db:Session,user:User,data:Apply):
     exist_user(db,user.id)
     if user.role != UserEnum.Customer :
         raise HTTPException(
-            status_code=409,
+            status_code=400,
             detail="admins and drivers can't apply"
         )
     no_active_applcations(db,user)
@@ -111,7 +111,7 @@ def valid_accept_reject (db:Session,app_id:int) :
     app = db.query(DriverApplication).with_for_update().filter(DriverApplication.id == app_id,DriverApplication.status == ApplicationStatus.PENDING).first()
     if app is None :
         raise HTTPException(
-            status_code=409,
-            detail="Application has already been reviewed"
+            status_code=404,
+            detail="Application is not found or has already been reviewed"
         )
     return app

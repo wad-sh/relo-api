@@ -22,13 +22,13 @@ def get_all (db:Session = Depends(get_db),admin:User=Depends(requires_admin)):
 
 
 @application_router.get("/me",response_model=List[ApplicationResponse])
-def get_all (db:Session = Depends(get_db),user:User=Depends(get_current_user)):
+def get_all_mine (db:Session = Depends(get_db),user:User=Depends(get_current_user)):
     return get_my_applications(db,user)
 
-@application_router.post("/{app_id}/accept",response_model=ApplicationResponse)
+@application_router.put("/{app_id}/accept",response_model=ApplicationResponse)
 def accept (app_id:int,db:Session=Depends(get_db),admin:User = Depends(requires_admin)):
     return accept_application_admin(db,admin,app_id)
 
-@application_router.post("/{app_id}/reject",response_model=ApplicationResponse)
+@application_router.put("/{app_id}/reject",response_model=ApplicationResponse)
 def reject (app_id:int,db:Session=Depends(get_db),admin:User = Depends(requires_admin)):
     return reject_application_admin(db,admin,app_id)
