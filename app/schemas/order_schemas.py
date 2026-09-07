@@ -35,6 +35,7 @@ class OrderResponse (BaseModel) :
     address_delivery:str
     description: str
     delivery_fee: int
+    created_at:datetime
     status:OrderStatus
     model_config = ConfigDict(from_attributes=True)
 

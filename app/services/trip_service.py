@@ -1,7 +1,6 @@
-from app.models.driver import Driver
+
 from app.schemas.trip_schemas import TripStatus,TripCreate,TripUpdateroute,TripUpdateStatus,Tripsearsh
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
 from app.models.user import User
 from fastapi import HTTPException
 from app.models.trip import Trip

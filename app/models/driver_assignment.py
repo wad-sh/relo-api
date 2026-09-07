@@ -1,5 +1,5 @@
 from app.database.database import Base
-from sqlalchemy import Column,String,Integer,ForeignKey,DateTime,func,Enum as SQLEnum
+from sqlalchemy import Column,Integer,ForeignKey,DateTime,func,Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from app.enums.assignment import AssignmentStatus
 

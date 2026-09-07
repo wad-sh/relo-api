@@ -13,7 +13,6 @@ from app.enums.order import OrderStatus
 from app.enums.trip import TripStatus
 from app.models.driver_application import DriverApplication
 from app.enums.application import ApplicationStatus
-from app.enums.assignment import AssignmentStatus
 from pydantic import EmailStr
 
 

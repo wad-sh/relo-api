@@ -1,15 +1,12 @@
-from app.models.driver import Driver
+
 from app.schemas.order_schemas import OrderUpdateStatus,OrderCreate,OrderUpdate
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
 from app.models.user import User
 from fastapi import HTTPException
-from app.models.trip import Trip
 from app.models.order import Order
 from app.enums.order import OrderStatus
 from app.services.user_service import exist_user
 from app.services.driver_service import valid_driver
-from app.enums.driver_modes import DrivingMode as Mode
 from app.enums.order import OrderStatus,OrderType
 from app.services.history_service import create_history
 from app.services.assignment_service import create_assignment,cancel_assignment

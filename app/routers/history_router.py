@@ -1,10 +1,9 @@
 from fastapi import APIRouter,Depends
 from sqlalchemy.orm import Session
-from app.auth.dep import get_current_user,requires_admin
+from app.auth.dep import requires_admin
 from app.schemas.histroy_schemas import HistoryResponse
 from app.database.database import get_db
 from app.services.history_service import get_by_order
-from app.models.user import User
 from typing import List
 
 history_router=APIRouter(

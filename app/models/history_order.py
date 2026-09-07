@@ -1,8 +1,8 @@
 from app.database.database import Base
 from sqlalchemy import Column,String,Integer,func,ForeignKey,DateTime,Enum as SQLEnum
 from sqlalchemy.orm import relationship
-from app.enums.order import OrderStatus,OrderType
-from app.enums.route_enum import Governorate
+from app.enums.order import OrderStatus
+
 
 class HistoryOrder (Base) :
     __tablename__ = "orders_history"

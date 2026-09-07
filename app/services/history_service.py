@@ -1,13 +1,8 @@
-from app.models.driver import Driver
+
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
-from app.models.user import User
-from fastapi import HTTPException
-from app.models.trip import Trip
-from app.models.order import Order
 from app.enums.order import OrderStatus
 from app.services.user_service import exist_user
-from app.enums.order import OrderStatus,OrderType
+from app.enums.order import OrderStatus
 from app.models.history_order import HistoryOrder
 
 

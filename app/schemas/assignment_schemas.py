@@ -1,6 +1,5 @@
-from app.enums.driver_modes import DrivingMode
-from app.enums.route_enum import Governorate
-from pydantic import BaseModel,ConfigDict,EmailStr
+
+from pydantic import BaseModel,ConfigDict
 from app.enums.assignment import AssignmentStatus
 from datetime import datetime
 
