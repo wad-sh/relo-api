@@ -8,27 +8,54 @@ Relo API is a backend system designed to manage delivery operations between cust
 
 ## Features
 
-- JWT-based authentication
-- Role-based authorization
-- Customer, Driver, and Admin roles
-- User registration and login
-- Driver application workflow
-- Admin application review
-- Local and route delivery orders
-- Automatic driver assignment
-- Driver assignment acceptance
-- Local, Flexible, and Trip driver modes
-- Route-based trip matching
-- Delivery order status management
-- Order status history
-- Delivery fee handling
-- Request and response validation with Pydantic
-- PostgreSQL database
-- SQLAlchemy ORM
-- Alembic database migrations
-- Automated testing with pytest
-- Transaction handling
-- Row-level locking for critical order-acceptance operations
+* JWT-based authentication
+
+* Role-based authorization
+
+* Customer, Driver, and Admin roles
+
+* User registration and login
+
+* Driver application workflow
+
+* Admin application review
+
+* Local and route delivery orders
+
+* Automatic driver assignment
+
+* Driver assignment acceptance
+
+* Local, Flexible, and Trip driver modes
+
+* Route-based trip matching
+
+* Delivery order status management
+
+* Order status history
+
+* Delivery fee handling
+
+* Request and response validation with Pydantic
+
+* PostgreSQL database
+
+* SQLAlchemy ORM
+
+* Alembic database migrations
+
+* Automated testing with pytest
+
+* Transaction handling
+
+* Row-level locking for critical order-acceptance operations
+
+* Dockerized development environment
+
+* Docker Compose setup for API and PostgreSQL
+
+* Separate test database in Docker
+
 
 ---
 
