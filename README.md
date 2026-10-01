@@ -1,8 +1,11 @@
 # Relo API
 
-A RESTful Delivery Management API built with **FastAPI**, **SQLAlchemy**, and **PostgreSQL**.
+A production-oriented RESTful Delivery Management API built with **FastAPI**, **SQLAlchemy**, and **PostgreSQL**, with a **Dockerized development environment**.
 
-Relo API is a backend system designed to manage delivery operations between customers, drivers, and administrators. Customers can create delivery orders, drivers can receive and accept assignments, and administrators can review driver applications and manage delivery operations.
+Relo API models real-world delivery operations between customers, drivers, and administrators, featuring **JWT authentication, role-based access control (RBAC), driver assignment workflows, database transactions, row-level locking, validation, and automated tests**.
+
+The project focuses on reliable backend architecture, data integrity, and real-world business logic.
+
 
 ---
 
