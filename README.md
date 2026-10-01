@@ -1130,22 +1130,95 @@ Assignment acceptance modifies several related records and therefore is handled 
 Possible future improvements include:
 
 * Refresh token support
+
 * Pagination
+
 * Filtering and sorting
+
 * Driver availability management
+
 * Customer and driver notifications
+
 * Real-time delivery tracking
+
 * WebSocket support
+
 * Dedicated concurrency/load testing
-* Dockerization
+
 * CI/CD pipeline
+
 * Production deployment configuration
+
 * API rate limiting
+
 * More extensive integration testing
+
 * Monitoring and logging
+
 * Automated API documentation publishing
 
+
 ---
+## Running with Docker
+
+Make sure Docker Desktop is installed and running.
+
+### 1. Clone the repository
+
+git clone https://github.com/wad-sh/relo-api
+cd relo-api
+
+### 2. Create the environment file
+
+Copy `.env.example` to `.env` and set your environment variables:
+
+cp .env.example .env
+
+On Windows PowerShell:
+
+Copy-Item .env.example .env
+
+### 3. Start the application
+
+Build the API image and start the API and PostgreSQL services:
+
+docker compose up --build
+
+The API will be available at:
+
+http://localhost:8000
+
+Swagger API documentation:
+
+http://localhost:8000/docs
+
+### 4. Run database migrations
+
+After the containers are running, apply the Alembic migrations:
+
+docker compose exec api alembic upgrade head
+
+### 5. Run tests
+
+Run the test suite inside the API container:
+
+docker compose exec api pytest
+
+### Stopping the application
+
+To stop the containers while preserving the database data:
+
+docker compose stop
+
+To start them again:
+
+docker compose start
+
+To remove the containers and network:
+
+docker compose down
+
+The PostgreSQL data is stored in a Docker named volume and is preserved by `docker compose down`.
 
 # Project Status
 
@@ -1154,23 +1227,47 @@ Possible future improvements include:
 Relo API currently contains the core delivery-management backend, including:
 
 * Authentication
+
 * Authorization
+
 * User roles
+
 * Driver applications
+
 * Application review workflow
+
 * Delivery orders
+
 * Driver assignments
+
 * Assignment acceptance
+
 * Driver modes
+
 * Trips
+
 * Order status management
+
 * Order cancellation
+
 * Order history
+
 * Delivery fees
+
 * PostgreSQL persistence
+
 * SQLAlchemy ORM
+
 * Alembic migrations
+
 * Automated tests
+
+* Dockerized development environment
+
+* Docker Compose setup for API and PostgreSQL
+
+* Separate test database in Docker
+
 
 ---
 
