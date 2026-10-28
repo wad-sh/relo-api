@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+  packages: write
+  
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -22,4 +26,51 @@ jobs:
           EOF
       - name: Run tests
         run: docker compose run --build --rm api pytest
-          
+  deploy: 
+    runs-on: ubuntu-latest
+    needs: tests 
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write       
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/wad-sh/relo-api-deploy:${{ github.sha }}
+      
+      - name: Log in to Azure
+        uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      
+      - name: Update Azure Container App
+        run: |
+          az containerapp update \
+            --name relo-api \
+            --resource-group relo-api-rg \
+            --image ghcr.io/wad-sh/relo-api-deploy:${{ github.sha }}
+      
+      - name: Verify deployment
+        run: |
+          curl --fail --silent --show-error \
+            --retry 10 --retry-delay 6 --retry-all-errors \
+            https://relo-api.redsea-8befd5c6.uaenorth.azurecontainerapps.io/openapi.json \
+            -o /dev/null
