@@ -1,64 +1,50 @@
 # Relo API
 
-A production-oriented RESTful Delivery Management API built with **FastAPI**, **SQLAlchemy**, and **PostgreSQL**, with a **Dockerized development environment**.
+A production-oriented Delivery Management REST API built with FastAPI, PostgreSQL, and SQLAlchemy, designed to model real-world delivery workflows with a strong focus on reliability, data integrity, and backend engineering best practices.
 
-Relo API models real-world delivery operations between customers, drivers, and administrators, featuring **JWT authentication, role-based access control (RBAC), driver assignment workflows, database transactions, row-level locking, validation, and automated tests**.
+The API supports customer, driver, and administrator roles, featuring JWT authentication, role-based access control (RBAC), delivery order lifecycle management, driver assignment workflows, transaction management, and row-level locking to handle concurrent operations safely.
 
-The project focuses on reliable backend architecture, data integrity, and real-world business logic.
+The project includes a Dockerized development and testing environment, database migrations with Alembic, and automated tests with Pytest. It also features a CI/CD pipeline using GitHub Actions that runs tests, builds and publishes Docker images to GitHub Container Registry (GHCR), and automatically deploys the application to Azure Container Apps, with post-deployment health verification.
+
+Key focus areas: REST API design, secure authentication and authorization, transactional consistency, concurrency control, automated testing, containerization, and cloud deployment.
 
 
 ---
 
 ## Features
 
-* JWT-based authentication
-
-* Role-based authorization
-
-* Customer, Driver, and Admin roles
-
-* User registration and login
-
-* Driver application workflow
-
-* Admin application review
-
-* Local and route delivery orders
-
-* Automatic driver assignment
-
-* Driver assignment acceptance
-
-* Local, Flexible, and Trip driver modes
-
-* Route-based trip matching
-
-* Delivery order status management
-
-* Order status history
-
-* Delivery fee handling
-
-* Request and response validation with Pydantic
-
-* PostgreSQL database
-
-* SQLAlchemy ORM
-
-* Alembic database migrations
-
-* Automated testing with pytest
-
-* Transaction handling
-
-* Row-level locking for critical order-acceptance operations
-
-* Dockerized development environment
-
-* Docker Compose setup for API and PostgreSQL
-
-* Separate test database in Docker
-
+- JWT-based authentication
+- Role-based authorization (RBAC)
+- Customer, Driver, and Admin roles
+- User registration and login
+- Driver application workflow
+- Admin application review
+- Local and route delivery orders
+- Automatic driver assignment
+- Driver assignment acceptance
+- Local, Flexible, and Trip driver modes
+- Route-based trip matching
+- Delivery order status management
+- Order status history
+- Delivery fee handling
+- Request and response validation with Pydantic
+- PostgreSQL database
+- SQLAlchemy ORM
+- Alembic database migrations
+- Automated testing with Pytest
+- Transaction management
+- Row-level locking for critical order-acceptance operations
+- Dockerized development and testing environment
+- Docker Compose setup for the API and PostgreSQL
+- Separate test database in Docker
+- Automated CI/CD pipeline using GitHub Actions
+- Automated test execution on pushes and pull requests
+- Automated Docker image builds and publishing to GitHub Container Registry (GHCR)
+- Automated deployment to Azure Container Apps after successful tests on `main`
+- Azure Database for PostgreSQL Flexible Server integration
+- OpenID Connect (OIDC) authentication for GitHub Actions-to-Azure deployment
+- Commit-specific Docker image tags for deployment traceability
+- Automated post-deployment API availability verification
 
 ---
 
@@ -1250,54 +1236,90 @@ docker compose down
 
 The PostgreSQL data is stored in a Docker named volume and is preserved by `docker compose down`.
 
+## Deployment & Infrastructure
+
+Relo API is containerized with Docker and deployed to **Microsoft Azure**, providing a publicly accessible API backed by a managed PostgreSQL database.
+
+- **Application Hosting:** Azure Container Apps
+- **Database:** Azure Database for PostgreSQL Flexible Server
+- **Container Registry:** GitHub Container Registry (GHCR)
+- **Containerization:** Docker and Docker Compose
+- **Cloud Authentication:** OpenID Connect (OIDC) for GitHub Actions-to-Azure authentication
+- **API Documentation:** Interactive Swagger UI powered by FastAPI
+
+**Live API:** [Relo API](https://relo-api.redsea-8befd5c6.uaenorth.azurecontainerapps.io/docs)
+
+## CI/CD Pipeline
+
+The project uses **GitHub Actions** to automate testing, container image publishing, and deployment.
+
+### Continuous Integration (CI)
+
+On every push and pull request, the CI workflow:
+
+1. Checks out the repository.
+2. Creates the test environment configuration.
+3. Runs the automated test suite using Docker Compose and Pytest.
+
+### Continuous Deployment (CD)
+
+On pushes to the `main` branch, deployment proceeds only after the test job succeeds:
+
+1. Builds a Docker image from the latest commit.
+2. Publishes the image to GitHub Container Registry (GHCR), tagged with the commit SHA for version traceability.
+3. Authenticates with Azure using OIDC.
+4. Updates the existing Azure Container App to use the newly published image.
+5. Verifies the deployment by checking the API's OpenAPI endpoint.
+
+This workflow helps ensure that changes are tested before deployment and that each deployment references a specific version of the source code.
+
+## Testing & Reliability
+
+- Automated API tests using **Pytest**.
+- Separate test database configuration.
+- Dockerized test execution for a consistent environment.
+- Previously recorded test run: **87 tests passed**.
+- Post-deployment HTTP verification to detect unsuccessful deployments.
+
+The project emphasizes reliable data handling through database transactions, row-level locking, input validation, and role-based access control.
+
 # Project Status
 
 ## Completed
 
 Relo API currently contains the core delivery-management backend, including:
 
-* Authentication
-
-* Authorization
-
-* User roles
-
-* Driver applications
-
-* Application review workflow
-
-* Delivery orders
-
-* Driver assignments
-
-* Assignment acceptance
-
-* Driver modes
-
-* Trips
-
-* Order status management
-
-* Order cancellation
-
-* Order history
-
-* Delivery fees
-
-* PostgreSQL persistence
-
-* SQLAlchemy ORM
-
-* Alembic migrations
-
-* Automated tests
-
-* Dockerized development environment
-
-* Docker Compose setup for API and PostgreSQL
-
-* Separate test database in Docker
-
+- Authentication
+- Authorization
+- User roles and role-based access control (RBAC)
+- Driver applications
+- Application review workflow
+- Delivery orders
+- Driver assignments
+- Assignment acceptance with concurrency control
+- Driver modes
+- Trips
+- Order status management
+- Order cancellation
+- Order history
+- Delivery fees
+- PostgreSQL persistence
+- SQLAlchemy ORM
+- Alembic database migrations
+- Automated tests with Pytest
+- Dockerized development and testing environment
+- Docker Compose setup for the API and PostgreSQL
+- Separate test database in Docker
+- Transaction management and row-level locking
+- Containerized application deployment on Azure Container Apps
+- Managed PostgreSQL database hosted on Azure
+- Docker image publishing to GitHub Container Registry (GHCR)
+- Automated CI/CD pipeline using GitHub Actions
+- Automated test execution on pushes and pull requests
+- Automated deployment to Azure after successful tests on `main`
+- GitHub Actions-to-Azure authentication using OpenID Connect (OIDC)
+- Commit-specific Docker image tags for deployment traceability
+- Automated post-deployment API availability verification
 
 ---
 
